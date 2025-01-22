@@ -1,0 +1,20 @@
+:root {
+  --background: #ffffff;
+  --background-soft: #f8f8f8;
+  --background-mute: #f2f2f2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #181818;
+    --background-soft: #222222;
+    --background-mute: #282828;
+    /* --text: rgba(235, 235, 235, 0.64); */
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
