@@ -1,16 +1,14 @@
 export type PieceType = {
-  type: "pawn" | "rook" | "knight" | "bishop" | "queen" | "king";
-  color: "white" | "black";
+  type: "rook" | "knight" | "bishop" | "queen" | "king" | "pawn";
+  color: Color;
+  position?: string;
 };
 
-export enum Color {
-  Black = "black",
-  White = "white",
-}
 
-export type Position = {
-  rank: number;
-  file: number;
-};
+
+export type Square = PieceType | null;
+
+export type Color = "black" | "white";
+export type Turn = "black" | "white";
 
 export type BoardType = (PieceType | null)[][];
