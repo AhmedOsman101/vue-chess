@@ -20,4 +20,10 @@ export type Color = "black" | "white";
 
 export type BoardType = (Piece | null)[][];
 
-export type GameState = {};
+export type GameState = {
+  turn: Color;
+  enPassant: Position | null;
+  castling: string;
+  halfMove: number;
+  fullMove: number;
+};
