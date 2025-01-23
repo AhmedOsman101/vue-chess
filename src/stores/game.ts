@@ -1,12 +1,13 @@
-import { computed, ref, type Ref } from "vue";
+import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 import type { BoardType, Color, Piece, Position, Square } from "@/lib";
 import { START_POSITION_FEN } from "@/lib/constants";
-import { fen2position } from "@/lib/chess";
+import { fen2position } from "@/lib/chess/notation";
 
 export const useGameStore = defineStore("game", () => {
   // 1. Board state management
-  const board: Ref<BoardType> = ref(fen2position(START_POSITION_FEN));
+  let fen = START_POSITION_FEN; // START_POSITION_FEN
+  const board = ref<BoardType>(fen2position(fen));
 
   // Proper array mutation for Vue reactivity
   const setBoard = (
@@ -40,14 +41,21 @@ export const useGameStore = defineStore("game", () => {
     selectedPiece.value = piece;
   };
 
+  // const highlightedSquares = ref<Position[]>([]);
+  // const setHighlightedSquares = (moves: Position[]) => {
+  //   highlightedSquares
+  // };
+
   return {
     board: computed(() => board.value), // Expose as computed
     turn: computed(() => turn.value), // Expose as computed
     validMoves: computed(() => validMoves.value), // Expose as computed
     selectedPiece: computed(() => selectedPiece.value), // Expose as computed
+    // highlightedSquares: computed(() => highlightedSquares.value), // Expose as computed
     setBoard,
     toggleTurn,
     setValidMoves,
     setSelectedPiece,
+    // setHighlightedSquares,
   };
 });
