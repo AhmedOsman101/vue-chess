@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Color, PieceType } from "@/lib";
-import { pgn2pos, pos2pgn } from "@/lib/chess";
+import type { Color, Piece, Position } from "@/lib";
+import { getValidMoves } from "@/lib/chess";
 import { useGameStore } from "@/stores/game";
 import { computed, ref, type Ref } from "vue";
 
@@ -13,7 +13,7 @@ const gameStore = useGameStore();
 
 // Reactive piece reference using computed
 const piece = computed(() => gameStore.board[props.row][props.col]);
-const position: Ref<string> = ref(pos2pgn(props.row, props.col));
+const position: Ref<Position> = ref({ row: props.row, col: props.col });
 const visible = ref(true);
 
 const getColor = (row: number, col: number): Color =>
@@ -30,7 +30,20 @@ const handleDrag = (e: DragEvent) => {
   }, 0);
 
   dt.effectAllowed = "move";
-  dt.setData("text/plain", `${piece.value.color}-${piece.value.type}-${position.value}`);
+  dt.setData(
+    "text/plain",
+    `${piece.value.color}-${piece.value.type}-${position.value.row}-${position.value.col}`
+  );
+
+  gameStore.setSelectedPiece(piece.value);
+
+  gameStore.setValidMoves(
+    getValidMoves(
+      gameStore.selectedPiece as Piece,
+      gameStore.board,
+      gameStore.turn
+    )
+  );
 };
 
 const handleDrop = (e: DragEvent) => {
@@ -39,7 +52,12 @@ const handleDrop = (e: DragEvent) => {
   const dt = e.dataTransfer;
   if (!dt) return;
 
-  const [color, type, originPosition] = dt.getData("text").split("-");
+  const [color, type, originRow, originCol] = dt.getData("text").split("-");
+
+  const originPosition: Position = {
+    row: +originRow,
+    col: +originCol,
+  };
 
   if (color != gameStore.turn) return;
 
@@ -55,19 +73,28 @@ const handleDrop = (e: DragEvent) => {
   // Validate board boundaries
   if (x < 0 || x >= 8 || y < 0 || y >= 8) return;
 
-  const { row: originRow, col: originCol } = pgn2pos(originPosition);
-  const newPosition = pos2pgn(y, x);
+  // const { row: originRow, col: originCol } = pgn2pos(originPosition);
+  const newPosition = { row: y, col: x };
 
   if (newPosition == originPosition) return;
 
-  const newPiece: PieceType = {
-    type: type as PieceType["type"],
+  const isMatch = gameStore.validMoves.find(
+    (move) => move.row == newPosition.row && move.col == newPosition.col
+  );
+  console.log("🚀 ~ handleDrop ~ isMatch:", isMatch);
+
+  if (!isMatch) return;
+
+  const newPiece: Piece = {
+    type: type as Piece["type"],
     color: color as Color,
     position: newPosition,
   };
 
-  gameStore.updateBoard(originRow, originCol, y, x, newPiece);
-  gameStore.updateTurn();
+  gameStore.setBoard(+originRow, +originCol, y, x, newPiece);
+  gameStore.toggleTurn();
+  gameStore.setValidMoves([]);
+  gameStore.setSelectedPiece(null);
 };
 
 const handleDragEnd = (e: any) => {
@@ -79,8 +106,7 @@ const handleDragEnd = (e: any) => {
     :class="getColor(row, col)"
     class="grid place-items-center size[85px]"
     @drop="handleDrop"
-    @dragover.prevent
-  >
+    @dragover.prevent>
     <div
       class="size-[85px] piece"
       :class="{ 'cursor-grab': piece != null, 'opacity-0': !visible }"
@@ -88,14 +114,10 @@ const handleDragEnd = (e: any) => {
       @dragstart="handleDrag"
       @dragend="handleDragEnd"
       :style="
-        piece
-          ? `background-image: url(/pieces/${piece?.color}-${piece?.type}.png)`
-          : `background-image: unset`
-      "
-    />
-    <!-- visible
-      ? `background-image: url(/pieces/${piece?.color}-${piece?.type}.png)`
-      : `background-image: unset` -->
+        piece ?
+          `background-image: url(/pieces/${piece?.color}-${piece?.type}.png)`
+        : `background-image: unset`
+      " />
   </div>
 </template>
 
