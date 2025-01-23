@@ -1,6 +1,6 @@
 import { computed, ref, type Ref } from "vue";
 import { defineStore } from "pinia";
-import type { BoardType, PieceType, Turn } from "@/lib";
+import type { BoardType, Color, Piece, Position, Square } from "@/lib";
 import { START_POSITION_FEN } from "@/lib/constants";
 import { fen2position } from "@/lib/chess";
 
@@ -9,12 +9,12 @@ export const useGameStore = defineStore("game", () => {
   const board: Ref<BoardType> = ref(fen2position(START_POSITION_FEN));
 
   // Proper array mutation for Vue reactivity
-  const updateBoard = (
+  const setBoard = (
     prevRow: number,
     prevCol: number,
     newRow: number,
     newCol: number,
-    newPiece: PieceType, // Added null type for empty squares
+    newPiece: Piece // Added null type for empty squares
   ) => {
     // Create new array to ensure reactivity
     const newBoard = board.value.map((row) => [...row]);
@@ -24,15 +24,30 @@ export const useGameStore = defineStore("game", () => {
   };
 
   // 2. Turn management with proper typing
-  const turn = ref<Turn>("white"); // Explicit type for safety
-  const updateTurn = () => {
+  const turn = ref<Color>("white"); // Explicit type for safety
+  const toggleTurn = () => {
     turn.value = turn.value === "white" ? "black" : "white";
+  };
+
+  const validMoves = ref<Position[]>([]);
+  const setValidMoves = (moves: Position[]) => {
+    validMoves.value = moves;
+  };
+
+  // const lastMove = ref<Move | null>(null);
+  const selectedPiece = ref<Square>(null);
+  const setSelectedPiece = (piece: Square) => {
+    selectedPiece.value = piece;
   };
 
   return {
     board: computed(() => board.value), // Expose as computed
-    updateBoard,
     turn: computed(() => turn.value), // Expose as computed
-    updateTurn,
+    validMoves: computed(() => validMoves.value), // Expose as computed
+    selectedPiece: computed(() => selectedPiece.value), // Expose as computed
+    setBoard,
+    toggleTurn,
+    setValidMoves,
+    setSelectedPiece,
   };
 });
