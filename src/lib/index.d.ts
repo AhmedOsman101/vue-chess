@@ -1,14 +1,23 @@
-export type PieceType = {
+export type Piece = {
   type: "rook" | "knight" | "bishop" | "queen" | "king" | "pawn";
   color: Color;
-  position?: string;
+  position?: Position;
 };
 
+export type Square = Piece | null;
 
+type Position = {
+  row: number;
+  col: number;
+};
 
-export type Square = PieceType | null;
+type Move = {
+  from: Position;
+  to: Position;
+};
 
 export type Color = "black" | "white";
-export type Turn = "black" | "white";
 
-export type BoardType = (PieceType | null)[][];
+export type BoardType = (Piece | null)[][];
+
+export type GameState = {};
