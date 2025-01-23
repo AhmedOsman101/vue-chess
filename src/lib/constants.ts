@@ -1,23 +1,23 @@
-import type { PieceType } from ".";
+import type { Piece } from ".";
 
 // BLACK PIECES
-export const BLACK_ROOK: PieceType = { type: "rook", color: "black" };
-export const BLACK_KNIGHT: PieceType = { type: "knight", color: "black" };
-export const BLACK_BISHOP: PieceType = { type: "bishop", color: "black" };
-export const BLACK_QUEEN: PieceType = { type: "queen", color: "black" };
-export const BLACK_KING: PieceType = { type: "king", color: "black" };
-export const BLACK_PAWN: PieceType = { type: "pawn", color: "black" };
+export const BLACK_ROOK: Piece = { type: "rook", color: "black" };
+export const BLACK_KNIGHT: Piece = { type: "knight", color: "black" };
+export const BLACK_BISHOP: Piece = { type: "bishop", color: "black" };
+export const BLACK_QUEEN: Piece = { type: "queen", color: "black" };
+export const BLACK_KING: Piece = { type: "king", color: "black" };
+export const BLACK_PAWN: Piece = { type: "pawn", color: "black" };
 // WHITE PIECES
-export const WHITE_ROOK: PieceType = { type: "rook", color: "white" };
-export const WHITE_KNIGHT: PieceType = { type: "knight", color: "white" };
-export const WHITE_BISHOP: PieceType = { type: "bishop", color: "white" };
-export const WHITE_QUEEN: PieceType = { type: "queen", color: "white" };
-export const WHITE_KING: PieceType = { type: "king", color: "white" };
-export const WHITE_PAWN: PieceType = { type: "pawn", color: "white" };
+export const WHITE_ROOK: Piece = { type: "rook", color: "white" };
+export const WHITE_KNIGHT: Piece = { type: "knight", color: "white" };
+export const WHITE_BISHOP: Piece = { type: "bishop", color: "white" };
+export const WHITE_QUEEN: Piece = { type: "queen", color: "white" };
+export const WHITE_KING: Piece = { type: "king", color: "white" };
+export const WHITE_PAWN: Piece = { type: "pawn", color: "white" };
 
 export const START_POSITION_FEN: string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
 
-export const PIECES_MAP: Record<string, PieceType> = {
+export const PIECES_MAP: Record<string, Piece> = {
   // BLACK PIECES
   r: BLACK_ROOK,
   n: BLACK_KNIGHT,
