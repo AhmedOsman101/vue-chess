@@ -41,21 +41,14 @@ export const useGameStore = defineStore("game", () => {
     selectedPiece.value = piece;
   };
 
-  // const highlightedSquares = ref<Position[]>([]);
-  // const setHighlightedSquares = (moves: Position[]) => {
-  //   highlightedSquares
-  // };
-
   return {
     board: computed(() => board.value), // Expose as computed
     turn: computed(() => turn.value), // Expose as computed
     validMoves: computed(() => validMoves.value), // Expose as computed
     selectedPiece: computed(() => selectedPiece.value), // Expose as computed
-    // highlightedSquares: computed(() => highlightedSquares.value), // Expose as computed
     setBoard,
     toggleTurn,
     setValidMoves,
     setSelectedPiece,
-    // setHighlightedSquares,
   };
 });

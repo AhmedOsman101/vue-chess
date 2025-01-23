@@ -1,6 +1,5 @@
 import type { BoardType, Color, Piece, Position, Square } from "..";
 import { PIECE_DIRECTIONS } from "../constants";
-import { fen2position, pos2pgn } from "./notation";
 
 export const isValidSquare = (row: number, col: number): boolean => {
   return row >= 0 && row < 8 && col >= 0 && col < 8;
