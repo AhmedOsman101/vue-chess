@@ -6,15 +6,17 @@ export type Piece = {
 
 export type Square = Piece | null;
 
-type Position = {
+export type Position = {
   row: number;
   col: number;
 };
 
-type Move = {
+type MoveType = {
   from: Position;
   to: Position;
 };
+
+export type Move = MoveType | null;
 
 export type Color = "black" | "white";
 
