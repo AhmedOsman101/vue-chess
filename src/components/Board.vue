@@ -10,7 +10,6 @@ import MoveHistory from "./MoveHistory.vue";
   <section id="board-container">
     <Ranks />
     <div
-      class="border"
       id="board"
       ref="board">
       <div v-for="col of range(0, 8)">

@@ -80,13 +80,13 @@ const handleDrop = (e: DragEvent) => {
   const { width, left, top } = boardElement.getBoundingClientRect();
   const size = Math.floor(width / 8);
 
-  const x = Math.floor((e.clientX - left) / size);
-  const y = Math.floor((e.clientY - top) / size);
+  const col = Math.floor((e.clientX - left) / size);
+  const row = Math.floor((e.clientY - top) / size);
 
   // Validate board boundaries
-  if (x < 0 || x >= 8 || y < 0 || y >= 8) return dropCleaner();
+  if (col < 0 || col >= 8 || row < 0 || row >= 8) return dropCleaner();
 
-  const newPosition = { row: y, col: x };
+  const newPosition = { row: row, col: col };
 
   if (newPosition == originPosition) return dropCleaner();
 
@@ -102,8 +102,8 @@ const handleDrop = (e: DragEvent) => {
     position: newPosition,
   };
 
-  gs.setBoard(+originRow, +originCol, y, x, newPiece);
   gs.setLastMove({ from: originPosition, to: newPosition }, newPiece);
+  gs.setBoard(+originRow, +originCol, row, col, newPiece);
   gs.toggleTurn();
   dropCleaner();
 };
