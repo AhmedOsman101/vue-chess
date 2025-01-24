@@ -103,7 +103,7 @@ const handleDrop = (e: DragEvent) => {
   };
 
   gs.setBoard(+originRow, +originCol, y, x, newPiece);
-  gs.setLastMove({ from: originPosition, to: newPosition });
+  gs.setLastMove({ from: originPosition, to: newPosition }, newPiece);
   gs.toggleTurn();
   dropCleaner();
 };
