@@ -1,13 +1,12 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import type { BoardType, Color, Piece, Position, Square } from "@/lib";
+import type { BoardType, Color, Move, Piece, Position, Square } from "@/lib";
 import { START_POSITION_FEN } from "@/lib/constants";
-import { fen2position } from "@/lib/chess/notation";
+import { fen2position, pos2pgn } from "@/lib/chess/notation";
 
 export const useGameStore = defineStore("game", () => {
   // 1. Board state management
-  let fen = START_POSITION_FEN; // START_POSITION_FEN
-  const board = ref<BoardType>(fen2position(fen));
+  const board = ref<BoardType>(fen2position(START_POSITION_FEN));
 
   // Proper array mutation for Vue reactivity
   const setBoard = (
@@ -35,7 +34,18 @@ export const useGameStore = defineStore("game", () => {
     validMoves.value = moves;
   };
 
-  // const lastMove = ref<Move | null>(null);
+  const lastMove = ref<Move>(null);
+  const moveHistory = ref<String[][]>([]);
+
+  const setLastMove = (move: Move) => {
+    lastMove.value = move;
+    if (turn.value == "white") {
+      moveHistory.value.push([pos2pgn(move!.to)]);
+    } else {
+      moveHistory.value[moveHistory.value.length - 1].push(pos2pgn(move!.to));
+    }
+  };
+
   const selectedPiece = ref<Square>(null);
   const setSelectedPiece = (piece: Square) => {
     selectedPiece.value = piece;
@@ -46,9 +56,12 @@ export const useGameStore = defineStore("game", () => {
     turn: computed(() => turn.value), // Expose as computed
     validMoves: computed(() => validMoves.value), // Expose as computed
     selectedPiece: computed(() => selectedPiece.value), // Expose as computed
+    lastMove: computed(() => lastMove.value), // Expose as computed
+    moveHistory: computed(() => moveHistory.value), // Expose as computed
     setBoard,
     toggleTurn,
     setValidMoves,
     setSelectedPiece,
+    setLastMove,
   };
 });
