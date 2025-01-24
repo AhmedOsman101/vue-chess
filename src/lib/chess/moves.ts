@@ -5,11 +5,9 @@ export const isValidSquare = (row: number, col: number): boolean => {
   return row >= 0 && row < 8 && col >= 0 && col < 8;
 };
 
-export const isOnHomeSquare = (pawn: Piece) => {
-  return pawn.color == "black" ?
-      pawn.position?.row == 1 // black's pawns start at the 7th rank (index 8 - 7)
-    : pawn.position?.row == 6; // white's pawns start at the 2nd rank (index 8 - 2)
-};
+// black's pawns start at 7th rank (index 7 - 6) 1 % 5 = 1
+// whites's pawns start at 2nd rank (index 7 - 1) 6 % 5 = 1
+export const isOnHomeSquare = (pawn: Piece) => pawn.position.row % 5 == 1; 
 
 export const pawnMoves = (pawn: Piece, board: BoardType, turn: Color) => {
   if (pawn.color != turn) return [];
