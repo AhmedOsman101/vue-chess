@@ -37,12 +37,14 @@ export const useGameStore = defineStore("game", () => {
   const lastMove = ref<Move>(null);
   const moveHistory = ref<String[][]>([]);
 
-  const setLastMove = (move: Move) => {
+  const setLastMove = (move: Move, piece: Piece) => {
     lastMove.value = move;
     if (turn.value == "white") {
-      moveHistory.value.push([pos2pgn(move!.to)]);
+      moveHistory.value.push([pos2pgn(move!.to, piece)]);
     } else {
-      moveHistory.value[moveHistory.value.length - 1].push(pos2pgn(move!.to));
+      moveHistory.value[moveHistory.value.length - 1].push(
+        pos2pgn(move!.to, piece)
+      );
     }
   };
 
