@@ -6,7 +6,8 @@ import { fen2position, pos2pgn } from "@/lib/chess/notation";
 
 export const useGameStore = defineStore("game", () => {
   // 1. Board state management
-  const board = ref<BoardType>(fen2position(START_POSITION_FEN));
+  // const board = ref<BoardType>(fen2position(START_POSITION_FEN));
+  const board = ref<BoardType>(fen2position("8/8/8/8/8/qq6/P7/8 w - - 0 1"));
 
   // Proper array mutation for Vue reactivity
   const setBoard = (
@@ -39,12 +40,25 @@ export const useGameStore = defineStore("game", () => {
 
   const setLastMove = (move: Move, piece: Piece) => {
     lastMove.value = move;
-    if (turn.value == "white") {
-      moveHistory.value.push([pos2pgn(move!.to, piece)]);
+    let isCapture, pgn;
+    const { row, col } = move!.to;
+    const oldPiece = board.value[row][col];
+
+    if (!oldPiece) isCapture = false;
+    else if (oldPiece.color != piece.color) isCapture = true;
+
+    if (piece.type == "pawn") {
+      pgn = pos2pgn(move!.to, piece, isCapture, move?.from.col);
     } else {
-      moveHistory.value[moveHistory.value.length - 1].push(
-        pos2pgn(move!.to, piece)
-      );
+      pgn = pos2pgn(move!.to, piece, isCapture);
+    }
+
+    console.log("🚀 ~ setLastMove ~ isCapture:", isCapture);
+
+    if (turn.value == "white") {
+      moveHistory.value.push([pgn]);
+    } else {
+      moveHistory.value[moveHistory.value.length - 1].push(pgn);
     }
   };
 
