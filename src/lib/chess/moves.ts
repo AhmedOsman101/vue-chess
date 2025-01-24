@@ -7,7 +7,8 @@ export const isValidSquare = (row: number, col: number): boolean => {
 
 // black's pawns start at 7th rank (index 7 - 6) 1 % 5 = 1
 // whites's pawns start at 2nd rank (index 7 - 1) 6 % 5 = 1
-export const isOnHomeSquare = (pawn: Piece) => pawn.position.row % 5 == 1; 
+export const isOnHomeSquare = (pawn: Piece) =>
+  (pawn.position?.row as number) % 5 == 1;
 
 export const pawnMoves = (pawn: Piece, board: BoardType, turn: Color) => {
   if (pawn.color != turn) return [];
@@ -19,37 +20,34 @@ export const pawnMoves = (pawn: Piece, board: BoardType, turn: Color) => {
 
   if (pawn.color == "white") {
     // pushing the pawn 1 square forward
-    if (!board[row - 1][col]) {
-      moves.push({ row: row - 1, col });
-    }
+    if (!board[row - 1][col]) moves.push({ row: row - 1, col });
 
     // pushing the pawn 2 square if it's on home square
-    if (isOnHomeSquare(pawn) && !board[row - 2][col]) {
+    if (isOnHomeSquare(pawn) && !board[row - 2][col] && !board[row - 1][col]) {
       moves.push({ row: row - 2, col });
     }
     // captures
-    let diagonalPieces = [board[row - 1][col - 1], board[row - 1][col + 1]];
-    if (diagonalPieces[0] && diagonalPieces[0].color == "black") {
+    let captures = [board[row - 1][col - 1], board[row - 1][col + 1]];
+    if (captures[0] && captures[0].color == "black") {
       moves.push({ row: row - 1, col: col - 1 });
     }
-    if (diagonalPieces[1] && diagonalPieces[1].color == "black") {
+    if (captures[1] && captures[1].color == "black") {
       moves.push({ row: row - 1, col: col + 1 });
     }
   } else if (pawn.color == "black") {
     // pushing the pawn 1 square forward
-    if (!board[row + 1][col]) {
-      moves.push({ row: row + 1, col });
-    }
+    if (!board[row + 1][col]) moves.push({ row: row + 1, col });
+
     // pushing the pawn 2 square if it's on home square
-    if (isOnHomeSquare(pawn) && !board[row + 2][col]) {
+    if (isOnHomeSquare(pawn) && !board[row + 1][col] && !board[row + 2][col]) {
       moves.push({ row: row + 2, col });
     }
     // captures
-    let diagonalPieces = [board[row + 1][col - 1], board[row + 1][col + 1]];
-    if (diagonalPieces[0] && diagonalPieces[0].color == "white") {
+    let captures = [board[row + 1][col - 1], board[row + 1][col + 1]];
+    if (captures[0] && captures[0].color == "white") {
       moves.push({ row: row + 1, col: col - 1 });
     }
-    if (diagonalPieces[1] && diagonalPieces[1].color == "white") {
+    if (captures[1] && captures[1].color == "white") {
       moves.push({ row: row + 1, col: col + 1 });
     }
   }
@@ -72,8 +70,10 @@ export const knightMoves = (knight: Piece, board: BoardType, turn: Color) => {
     let newCol = col + dir[1];
     if (!isValidSquare(newRow, newCol)) return;
 
-    if (board[newRow][newCol]) {
-      if (board[newRow][newCol].color != knight.color) {
+    const opposingPiece = board[newRow][newCol];
+
+    if (opposingPiece) {
+      if (opposingPiece.color != knight.color) {
         moves.push({ row: newRow, col: newCol });
       }
       return;
