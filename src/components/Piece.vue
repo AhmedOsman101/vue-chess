@@ -9,9 +9,9 @@ const props = defineProps<{
   col: number;
 }>();
 
-const gameStore = useGameStore();
+const gs = useGameStore();
 
-const piece = computed(() => gameStore.board[props.row][props.col]);
+const piece = computed(() => gs.board[props.row][props.col]);
 const position = ref<Position>({ row: props.row, col: props.col });
 const visible = ref(true);
 
@@ -20,7 +20,7 @@ const squareColor = computed(() =>
 );
 
 const isHighlighted = computed(() => {
-  return gameStore.validMoves.some(
+  return gs.validMoves.some(
     (move) => move.row === props.row && move.col === props.col
   );
 });
@@ -28,11 +28,9 @@ const isHighlighted = computed(() => {
 const highlightClass = computed(() => {
   if (!isHighlighted.value) return "";
 
-  const targetPiece = gameStore.board[props.row][props.col];
+  const targetPiece = gs.board[props.row][props.col];
   // Check if it's a capture move (square contains opponent's piece)
-  return targetPiece && targetPiece.color !== gameStore.turn ?
-      "capture"
-    : "highlight";
+  return targetPiece && targetPiece.color !== gs.turn ? "capture" : "highlight";
 });
 
 const handleDrag = (e: DragEvent) => {
@@ -51,20 +49,14 @@ const handleDrag = (e: DragEvent) => {
     `${piece.value.color}-${piece.value.type}-${position.value.row}-${position.value.col}`
   );
 
-  gameStore.setSelectedPiece(piece.value);
+  gs.setSelectedPiece(piece.value);
 
-  gameStore.setValidMoves(
-    getValidMoves(
-      gameStore.selectedPiece as Piece,
-      gameStore.board,
-      gameStore.turn
-    )
-  );
+  gs.setValidMoves(getValidMoves(gs.selectedPiece as Piece, gs.board, gs.turn));
 };
 
 const dropCleaner = () => {
-  gameStore.setValidMoves([]);
-  gameStore.setSelectedPiece(null);
+  gs.setValidMoves([]);
+  gs.setSelectedPiece(null);
 };
 
 const handleDrop = (e: DragEvent) => {
@@ -80,7 +72,7 @@ const handleDrop = (e: DragEvent) => {
     col: +originCol,
   };
 
-  if (color != gameStore.turn) return dropCleaner();
+  if (color != gs.turn) return dropCleaner();
 
   const boardElement = document.getElementById("board");
   if (!boardElement) return dropCleaner();
@@ -94,15 +86,13 @@ const handleDrop = (e: DragEvent) => {
   // Validate board boundaries
   if (x < 0 || x >= 8 || y < 0 || y >= 8) return dropCleaner();
 
-  // const { row: originRow, col: originCol } = pgn2pos(originPosition);
   const newPosition = { row: y, col: x };
 
   if (newPosition == originPosition) return dropCleaner();
 
-  const isMatch = gameStore.validMoves.find(
+  const isMatch = gs.validMoves.find(
     (move) => move.row == newPosition.row && move.col == newPosition.col
   );
-  // console.log("🚀 ~ handleDrop ~ isMatch:", isMatch);
 
   if (!isMatch) return dropCleaner();
 
@@ -112,8 +102,9 @@ const handleDrop = (e: DragEvent) => {
     position: newPosition,
   };
 
-  gameStore.setBoard(+originRow, +originCol, y, x, newPiece);
-  gameStore.toggleTurn();
+  gs.setBoard(+originRow, +originCol, y, x, newPiece);
+  gs.setLastMove({ from: originPosition, to: newPosition });
+  gs.toggleTurn();
   dropCleaner();
 };
 
