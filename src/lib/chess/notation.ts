@@ -5,15 +5,29 @@ import { char2num, getChar, isNumber } from "../utils";
 export const getFile = (col: number): String => getChar(97 + col);
 export const file2number = (col: String): number => char2num(col) - 97;
 
-export const pos2pgn = (pos: Position, piece: Square = null): string => {
-  if (piece && piece.type != "pawn") {
-    return `${getPieceKey({ ...piece, color: "white" })}${getFile(pos.col)}${8 - pos.row}`;
-  }
-  return `${getFile(pos.col)}${8 - pos.row}`;
-};
+export const pos2pgn = (
+  pos: Position,
+  piece: Square = null,
+  capture = false,
+  pawnCol = -1
+): string => {
+  let result = "";
+  if (piece) {
+    switch (piece.type) {
+      case "pawn":
+        console.log("🚀 ~ pawn:", pawnCol);
+        if (capture) result += getFile(pawnCol);
+        break;
+      default:
+        result += `${getPieceKey(piece).toUpperCase()}`;
+        break;
+    }
 
-export const coord2pgn = (row: number, col: number): string =>
-  `${getFile(col)}${8 - row}`;
+    if (capture) result += "x";
+  }
+  result += `${getFile(pos.col)}${8 - pos.row}`;
+  return result;
+};
 
 export const pgn2pos = (pgn: string): Position => {
   if (!/^[a-h][1-8]$/.test(pgn)) throw new Error(`Invalid PGN: ${pgn}`);
