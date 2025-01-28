@@ -20,8 +20,9 @@ const gs = useGameStore();
 </template>
 
 <style>
+@reference "../assets/base.css";
 #movehistory {
   grid-area: moves;
-  @apply ml-10 p-10 pt-5 text-white;
+  @apply mx-10 p-10 pt-5 text-white;
 }
 </style>
