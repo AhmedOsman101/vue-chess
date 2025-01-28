@@ -6,8 +6,8 @@ import { fen2position, pos2pgn } from "@/lib/chess/notation";
 
 export const useGameStore = defineStore("game", () => {
   // 1. Board state management
-  // const board = ref<BoardType>(fen2position(START_POSITION_FEN));
-  const board = ref<BoardType>(fen2position("8/8/8/8/8/qq6/P7/8 w - - 0 1"));
+  const board = ref<BoardType>(fen2position(START_POSITION_FEN));
+  // const board = ref<BoardType>(fen2position("8/8/8/8/8/qq6/P7/8 w - - 0 1"));
 
   // Proper array mutation for Vue reactivity
   const setBoard = (
