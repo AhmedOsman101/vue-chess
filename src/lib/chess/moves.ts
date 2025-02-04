@@ -15,8 +15,8 @@ export const pawnMoves = (pawn: Piece, board: BoardType, turn: Color) => {
 
   const moves: Position[] = [];
 
-  let row = pawn.position!.row;
-  let col = pawn.position!.col;
+  const row = pawn.position!.row;
+  const col = pawn.position!.col;
 
   if (pawn.color == "white") {
     // pushing the pawn 1 square forward
@@ -27,7 +27,7 @@ export const pawnMoves = (pawn: Piece, board: BoardType, turn: Color) => {
       moves.push({ row: row - 2, col });
     }
     // captures
-    let captures = [board[row - 1][col - 1], board[row - 1][col + 1]];
+    const captures: Square[] = [board[row - 1][col - 1], board[row - 1][col + 1]];
     if (captures[0] && captures[0].color == "black") {
       moves.push({ row: row - 1, col: col - 1 });
     }
@@ -43,7 +43,7 @@ export const pawnMoves = (pawn: Piece, board: BoardType, turn: Color) => {
       moves.push({ row: row + 2, col });
     }
     // captures
-    let captures = [board[row + 1][col - 1], board[row + 1][col + 1]];
+    const captures: Square[] = [board[row + 1][col - 1], board[row + 1][col + 1]];
     if (captures[0] && captures[0].color == "white") {
       moves.push({ row: row + 1, col: col - 1 });
     }
@@ -60,14 +60,14 @@ export const knightMoves = (knight: Piece, board: BoardType, turn: Color) => {
 
   const moves: Position[] = [];
 
-  let row = knight.position!.row;
-  let col = knight.position!.col;
+  const row = knight.position!.row;
+  const col = knight.position!.col;
 
   const directions: number[][] = PIECE_DIRECTIONS[knight.type];
 
   directions.forEach((dir) => {
-    let newRow = row + dir[0];
-    let newCol = col + dir[1];
+    const newRow = row + dir[0];
+    const newCol = col + dir[1];
     if (!isValidSquare(newRow, newCol)) return;
 
     const opposingPiece = board[newRow][newCol];
@@ -95,13 +95,13 @@ export const slidingPieceMoves = (
   const moves: Position[] = [];
   const directions: number[][] = PIECE_DIRECTIONS[piece.type];
 
-  let row = piece.position!.row;
-  let col = piece.position!.col;
+  const row = piece.position!.row;
+  const col = piece.position!.col;
 
   directions.forEach((dir) => {
     for (let i = 1; i < 8; i++) {
-      let newRow = row + dir[0] * i;
-      let newCol = col + dir[1] * i;
+      const newRow = row + dir[0] * i;
+      const newCol = col + dir[1] * i;
       if (!isValidSquare(newRow, newCol)) break;
 
       const opposingPiece = board[newRow][newCol];
@@ -129,8 +129,8 @@ export const kingMoves = (
 
   let moves: Position[] = [];
 
-  let row = king.position!.row;
-  let col = king.position!.col;
+  const row = king.position!.row;
+  const col = king.position!.col;
   let opposingKing: Square = null;
 
   const directions: number[][] = PIECE_DIRECTIONS[king.type];
@@ -138,8 +138,8 @@ export const kingMoves = (
   const opposingKingDirections: number[][] = PIECE_DIRECTIONS["opposingKing"];
 
   directions.forEach((dir) => {
-    let newRow = row + dir[0];
-    let newCol = col + dir[1];
+    const newRow = row + dir[0];
+    const newCol = col + dir[1];
     if (!isValidSquare(newRow, newCol)) return;
     const opposingPiece = board[newRow][newCol];
 
@@ -150,8 +150,8 @@ export const kingMoves = (
 
   if (!skip) {
     opposingKingDirections.forEach((dir) => {
-      let newRow = row + dir[0];
-      let newCol = col + dir[1];
+      const newRow = row + dir[0];
+      const newCol = col + dir[1];
       if (!isValidSquare(newRow, newCol)) return;
       const opposingPiece = board[newRow][newCol];
 

@@ -5,5 +5,3 @@
 <template>
   <Board />
 </template>
-
-<style></style>

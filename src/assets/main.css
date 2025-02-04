@@ -1,12 +1,10 @@
 @import './base.css';
 
 .black {
-  background: #8ca2ad;
   background: #69655f;
 }
 
 .white {
-  background: #dee3e6;
   background: #bcb49a;
 }
 

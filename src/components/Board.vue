@@ -12,8 +12,8 @@ import MoveHistory from "./MoveHistory.vue";
     <div
       id="board"
       ref="board">
-      <div v-for="col of range(0, 8)">
-        <div v-for="row of range(0, 8)">
+      <div v-for="col of range(0, 8)" :key="col">
+        <div v-for="row of range(0, 8)" :key="row">
           <Piece
             :key="`${row}-${col}`"
             :row="row"

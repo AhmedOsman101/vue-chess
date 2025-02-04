@@ -108,7 +108,7 @@ const handleDrop = (e: DragEvent) => {
   dropCleaner();
 };
 
-const handleDragEnd = (e: any) => {
+const handleDragEnd = () => {
   visible.value = true;
 };
 
@@ -169,7 +169,6 @@ watchEffect(() => {
   width: calc(85px * 0.8);
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 7px solid;
-  border-color: rgba(50, 0, 0, 0.5);
+  border: 7px solid rgba(50, 0, 0, 0.5);
 }
 </style>

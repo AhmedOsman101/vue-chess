@@ -66,10 +66,10 @@ export const PIECE_DIRECTIONS: Record<string, number[][]> = {
     [0, -1], // right
     [0, 1], // left
 
-    [-1, 1], // top right
     [-1, -1], // top left
-    [1, 1], // bottom right
+    [-1, 1], // top right
     [1, -1], // bottom left
+    [1, 1], // bottom right
   ],
   opposingKing: [
     [-2, 2], // 2 top, 2 right
