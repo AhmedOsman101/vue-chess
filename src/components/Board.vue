@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { range } from "@/lib/utils";
-import Piece from "./Piece.vue";
-import Ranks from "./Ranks.vue";
 import Files from "./Files.vue";
 import MoveHistory from "./MoveHistory.vue";
+import Piece from "./Piece.vue";
+import Ranks from "./Ranks.vue";
 </script>
 
 <template>

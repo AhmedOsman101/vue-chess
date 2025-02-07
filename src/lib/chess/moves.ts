@@ -2,195 +2,201 @@ import type { BoardType, Color, Piece, Position, Square } from "..";
 import { PIECE_DIRECTIONS } from "../constants";
 
 export const isValidSquare = (row: number, col: number): boolean => {
-  return row >= 0 && row < 8 && col >= 0 && col < 8;
+	return row >= 0 && row < 8 && col >= 0 && col < 8;
 };
 
 // black's pawns start at 7th rank (index 7 - 6) 1 % 5 = 1
 // whites's pawns start at 2nd rank (index 7 - 1) 6 % 5 = 1
 export const isOnHomeSquare = (pawn: Piece) =>
-  (pawn.position?.row as number) % 5 == 1;
+	(pawn.position?.row as number) % 5 === 1;
 
 export const pawnMoves = (pawn: Piece, board: BoardType, turn: Color) => {
-  if (pawn.color != turn) return [];
+	if (pawn.color != turn) return [];
 
-  const moves: Position[] = [];
+	const moves: Position[] = [];
 
-  const row = pawn.position!.row;
-  const col = pawn.position!.col;
+	const row = pawn.position!.row;
+	const col = pawn.position!.col;
 
-  if (pawn.color == "white") {
-    // pushing the pawn 1 square forward
-    if (!board[row - 1][col]) moves.push({ row: row - 1, col });
+	if (pawn.color === "white") {
+		// pushing the pawn 1 square forward
+		if (!board[row - 1][col]) moves.push({ row: row - 1, col });
 
-    // pushing the pawn 2 square if it's on home square
-    if (isOnHomeSquare(pawn) && !board[row - 2][col] && !board[row - 1][col]) {
-      moves.push({ row: row - 2, col });
-    }
-    // captures
-    const captures: Square[] = [board[row - 1][col - 1], board[row - 1][col + 1]];
-    if (captures[0] && captures[0].color == "black") {
-      moves.push({ row: row - 1, col: col - 1 });
-    }
-    if (captures[1] && captures[1].color == "black") {
-      moves.push({ row: row - 1, col: col + 1 });
-    }
-  } else if (pawn.color == "black") {
-    // pushing the pawn 1 square forward
-    if (!board[row + 1][col]) moves.push({ row: row + 1, col });
+		// pushing the pawn 2 square if it's on home square
+		if (isOnHomeSquare(pawn) && !board[row - 2][col] && !board[row - 1][col]) {
+			moves.push({ row: row - 2, col });
+		}
+		// captures
+		const captures: Square[] = [
+			board[row - 1][col - 1],
+			board[row - 1][col + 1],
+		];
+		if (captures[0] && captures[0].color == "black") {
+			moves.push({ row: row - 1, col: col - 1 });
+		}
+		if (captures[1] && captures[1].color == "black") {
+			moves.push({ row: row - 1, col: col + 1 });
+		}
+	} else if (pawn.color == "black") {
+		// pushing the pawn 1 square forward
+		if (!board[row + 1][col]) moves.push({ row: row + 1, col });
 
-    // pushing the pawn 2 square if it's on home square
-    if (isOnHomeSquare(pawn) && !board[row + 1][col] && !board[row + 2][col]) {
-      moves.push({ row: row + 2, col });
-    }
-    // captures
-    const captures: Square[] = [board[row + 1][col - 1], board[row + 1][col + 1]];
-    if (captures[0] && captures[0].color == "white") {
-      moves.push({ row: row + 1, col: col - 1 });
-    }
-    if (captures[1] && captures[1].color == "white") {
-      moves.push({ row: row + 1, col: col + 1 });
-    }
-  }
+		// pushing the pawn 2 square if it's on home square
+		if (isOnHomeSquare(pawn) && !board[row + 1][col] && !board[row + 2][col]) {
+			moves.push({ row: row + 2, col });
+		}
+		// captures
+		const captures: Square[] = [
+			board[row + 1][col - 1],
+			board[row + 1][col + 1],
+		];
+		if (captures[0] && captures[0].color == "white") {
+			moves.push({ row: row + 1, col: col - 1 });
+		}
+		if (captures[1] && captures[1].color == "white") {
+			moves.push({ row: row + 1, col: col + 1 });
+		}
+	}
 
-  return moves;
+	return moves;
 };
 
 export const knightMoves = (knight: Piece, board: BoardType, turn: Color) => {
-  if (knight.color != turn) return [];
+	if (knight.color != turn) return [];
 
-  const moves: Position[] = [];
+	const moves: Position[] = [];
 
-  const row = knight.position!.row;
-  const col = knight.position!.col;
+	const row = knight.position!.row;
+	const col = knight.position!.col;
 
-  const directions: number[][] = PIECE_DIRECTIONS[knight.type];
+	const directions: number[][] = PIECE_DIRECTIONS[knight.type];
 
-  directions.forEach((dir) => {
-    const newRow = row + dir[0];
-    const newCol = col + dir[1];
-    if (!isValidSquare(newRow, newCol)) return;
+	directions.forEach((dir) => {
+		const newRow = row + dir[0];
+		const newCol = col + dir[1];
+		if (!isValidSquare(newRow, newCol)) return;
 
-    const opposingPiece = board[newRow][newCol];
+		const opposingPiece = board[newRow][newCol];
 
-    if (opposingPiece) {
-      if (opposingPiece.color != knight.color) {
-        moves.push({ row: newRow, col: newCol });
-      }
-      return;
-    }
+		if (opposingPiece) {
+			if (opposingPiece.color != knight.color) {
+				moves.push({ row: newRow, col: newCol });
+			}
+			return;
+		}
 
-    moves.push({ row: newRow, col: newCol });
-  });
+		moves.push({ row: newRow, col: newCol });
+	});
 
-  return moves;
+	return moves;
 };
 
 export const slidingPieceMoves = (
-  piece: Piece,
-  board: BoardType,
-  turn: Color
+	piece: Piece,
+	board: BoardType,
+	turn: Color,
 ) => {
-  if (piece.color != turn) return [];
+	if (piece.color != turn) return [];
 
-  const moves: Position[] = [];
-  const directions: number[][] = PIECE_DIRECTIONS[piece.type];
+	const moves: Position[] = [];
+	const directions: number[][] = PIECE_DIRECTIONS[piece.type];
 
-  const row = piece.position!.row;
-  const col = piece.position!.col;
+	const row = piece.position!.row;
+	const col = piece.position!.col;
 
-  directions.forEach((dir) => {
-    for (let i = 1; i < 8; i++) {
-      const newRow = row + dir[0] * i;
-      const newCol = col + dir[1] * i;
-      if (!isValidSquare(newRow, newCol)) break;
+	directions.forEach((dir) => {
+		for (let i = 1; i < 8; i++) {
+			const newRow = row + dir[0] * i;
+			const newCol = col + dir[1] * i;
+			if (!isValidSquare(newRow, newCol)) break;
 
-      const opposingPiece = board[newRow][newCol];
-      if (opposingPiece) {
-        if (opposingPiece.color != piece.color) {
-          moves.push({ row: newRow, col: newCol });
-        }
-        break;
-      }
+			const opposingPiece = board[newRow][newCol];
+			if (opposingPiece) {
+				if (opposingPiece.color != piece.color) {
+					moves.push({ row: newRow, col: newCol });
+				}
+				break;
+			}
 
-      moves.push({ row: newRow, col: newCol });
-    }
-  });
+			moves.push({ row: newRow, col: newCol });
+		}
+	});
 
-  return moves;
+	return moves;
 };
 
 export const kingMoves = (
-  king: Piece,
-  board: BoardType,
-  turn: Color,
-  skip = false
+	king: Piece,
+	board: BoardType,
+	turn: Color,
+	skip = false,
 ) => {
-  if (king.color != turn && !skip) return [];
+	if (king.color != turn && !skip) return [];
 
-  let moves: Position[] = [];
+	let moves: Position[] = [];
 
-  const row = king.position!.row;
-  const col = king.position!.col;
-  let opposingKing: Square = null;
+	const row = king.position!.row;
+	const col = king.position!.col;
+	let opposingKing: Square = null;
 
-  const directions: number[][] = PIECE_DIRECTIONS[king.type];
+	const directions: number[][] = PIECE_DIRECTIONS[king.type];
 
-  const opposingKingDirections: number[][] = PIECE_DIRECTIONS["opposingKing"];
+	const opposingKingDirections: number[][] = PIECE_DIRECTIONS["opposingKing"];
 
-  directions.forEach((dir) => {
-    const newRow = row + dir[0];
-    const newCol = col + dir[1];
-    if (!isValidSquare(newRow, newCol)) return;
-    const opposingPiece = board[newRow][newCol];
+	directions.forEach((dir) => {
+		const newRow = row + dir[0];
+		const newCol = col + dir[1];
+		if (!isValidSquare(newRow, newCol)) return;
+		const opposingPiece = board[newRow][newCol];
 
-    // if there is a friendly piece ahead skip the move
-    if (opposingPiece && opposingPiece.color == king.color && !skip) return;
-    moves.push({ row: newRow, col: newCol });
-  });
+		// if there is a friendly piece ahead skip the move
+		if (opposingPiece && opposingPiece.color == king.color && !skip) return;
+		moves.push({ row: newRow, col: newCol });
+	});
 
-  if (!skip) {
-    opposingKingDirections.forEach((dir) => {
-      const newRow = row + dir[0];
-      const newCol = col + dir[1];
-      if (!isValidSquare(newRow, newCol)) return;
-      const opposingPiece = board[newRow][newCol];
+	if (!skip) {
+		opposingKingDirections.forEach((dir) => {
+			const newRow = row + dir[0];
+			const newCol = col + dir[1];
+			if (!isValidSquare(newRow, newCol)) return;
+			const opposingPiece = board[newRow][newCol];
 
-      if (opposingPiece && opposingPiece.type == "king") {
-        opposingKing = opposingPiece;
-        return;
-      }
-    });
-  }
+			if (opposingPiece && opposingPiece.type == "king") {
+				opposingKing = opposingPiece;
+				return;
+			}
+		});
+	}
 
-  if (opposingKing) {
-    const opposingKingMoves = kingMoves(opposingKing, board, turn, true);
-    moves = moves.filter(
-      (n) => !opposingKingMoves.some((m) => m.row === n.row && m.col === n.col)
-    );
-  }
+	if (opposingKing) {
+		const opposingKingMoves = kingMoves(opposingKing, board, turn, true);
+		moves = moves.filter(
+			(n) => !opposingKingMoves.some((m) => m.row === n.row && m.col === n.col),
+		);
+	}
 
-  return moves;
+	return moves;
 };
 
 export const getValidMoves = (piece: Piece, board: BoardType, turn: Color) => {
-  switch (piece.type) {
-    case "rook":
-    case "bishop":
-    case "queen":
-      return slidingPieceMoves(piece, board, turn);
+	switch (piece.type) {
+		case "rook":
+		case "bishop":
+		case "queen":
+			return slidingPieceMoves(piece, board, turn);
 
-    case "knight":
-      return knightMoves(piece, board, turn);
+		case "knight":
+			return knightMoves(piece, board, turn);
 
-    case "pawn":
-      return pawnMoves(piece, board, turn);
+		case "pawn":
+			return pawnMoves(piece, board, turn);
 
-    case "king":
-      return kingMoves(piece, board, turn);
+		case "king":
+			return kingMoves(piece, board, turn);
 
-    default:
-      return [];
-  }
+		default:
+			return [];
+	}
 };
 
 // let temp = getValidMoves(

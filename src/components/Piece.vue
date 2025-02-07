@@ -5,8 +5,8 @@ import { useGameStore } from "@/stores/game";
 import { computed, ref, watchEffect } from "vue";
 
 const props = defineProps<{
-  row: number;
-  col: number;
+	row: number;
+	col: number;
 }>();
 
 const gs = useGameStore();
@@ -16,107 +16,107 @@ const position = ref<Position>({ row: props.row, col: props.col });
 const visible = ref(true);
 
 const squareColor = computed(() =>
-  (props.row + props.col) % 2 == 0 ? "white" : "black"
+	(props.row + props.col) % 2 === 0 ? "white" : "black",
 );
 
 const isHighlighted = computed(() => {
-  return gs.validMoves.some(
-    (move) => move.row === props.row && move.col === props.col
-  );
+	return gs.validMoves.some(
+		(move) => move.row === props.row && move.col === props.col,
+	);
 });
 
 const highlightClass = computed(() => {
-  if (!isHighlighted.value) return "";
+	if (!isHighlighted.value) return "";
 
-  const targetPiece = gs.board[props.row][props.col];
-  // Check if it's a capture move (square contains opponent's piece)
-  return targetPiece && targetPiece.color !== gs.turn ? "capture" : "highlight";
+	const targetPiece = gs.board[props.row][props.col];
+	// Check if it's a capture move (square contains opponent's piece)
+	return targetPiece && targetPiece.color !== gs.turn ? "capture" : "highlight";
 });
 
 const handleDrag = (e: DragEvent) => {
-  if (!piece.value) return; // Don't drag empty squares
+	if (!piece.value) return; // Don't drag empty squares
 
-  const dt = e.dataTransfer;
-  if (!dt) return;
+	const dt = e.dataTransfer;
+	if (!dt) return;
 
-  setTimeout(() => {
-    visible.value = false;
-  }, 0);
+	setTimeout(() => {
+		visible.value = false;
+	}, 0);
 
-  dt.effectAllowed = "move";
-  dt.setData(
-    "text/plain",
-    `${piece.value.color}-${piece.value.type}-${position.value.row}-${position.value.col}`
-  );
+	dt.effectAllowed = "move";
+	dt.setData(
+		"text/plain",
+		`${piece.value.color}-${piece.value.type}-${position.value.row}-${position.value.col}`,
+	);
 
-  gs.setSelectedPiece(piece.value);
+	gs.setSelectedPiece(piece.value);
 
-  gs.setValidMoves(getValidMoves(gs.selectedPiece as Piece, gs.board, gs.turn));
+	gs.setValidMoves(getValidMoves(gs.selectedPiece as Piece, gs.board, gs.turn));
 };
 
 const dropCleaner = () => {
-  gs.setValidMoves([]);
-  gs.setSelectedPiece(null);
+	gs.setValidMoves([]);
+	gs.setSelectedPiece(null);
 };
 
 const handleDrop = (e: DragEvent) => {
-  e.preventDefault();
+	e.preventDefault();
 
-  const dt = e.dataTransfer;
-  if (!dt) return dropCleaner();
+	const dt = e.dataTransfer;
+	if (!dt) return dropCleaner();
 
-  const [color, type, originRow, originCol] = dt.getData("text").split("-");
+	const [color, type, originRow, originCol] = dt.getData("text").split("-");
 
-  const originPosition: Position = {
-    row: +originRow,
-    col: +originCol,
-  };
+	const originPosition: Position = {
+		row: +originRow,
+		col: +originCol,
+	};
 
-  if (color != gs.turn) return dropCleaner();
+	if (color !== gs.turn) return dropCleaner();
 
-  const boardElement = document.getElementById("board");
-  if (!boardElement) return dropCleaner();
+	const boardElement = document.getElementById("board");
+	if (!boardElement) return dropCleaner();
 
-  const { width, left, top } = boardElement.getBoundingClientRect();
-  const size = Math.floor(width / 8);
+	const { width, left, top } = boardElement.getBoundingClientRect();
+	const size = Math.floor(width / 8);
 
-  const col = Math.floor((e.clientX - left) / size);
-  const row = Math.floor((e.clientY - top) / size);
+	const col = Math.floor((e.clientX - left) / size);
+	const row = Math.floor((e.clientY - top) / size);
 
-  // Validate board boundaries
-  if (col < 0 || col >= 8 || row < 0 || row >= 8) return dropCleaner();
+	// Validate board boundaries
+	if (col < 0 || col >= 8 || row < 0 || row >= 8) return dropCleaner();
 
-  const newPosition = { row: row, col: col };
+	const newPosition = { row: row, col: col };
 
-  if (newPosition == originPosition) return dropCleaner();
+	if (newPosition === originPosition) return dropCleaner();
 
-  const isMatch = gs.validMoves.find(
-    (move) => move.row == newPosition.row && move.col == newPosition.col
-  );
+	const isMatch = gs.validMoves.find(
+		(move) => move.row === newPosition.row && move.col === newPosition.col,
+	);
 
-  if (!isMatch) return dropCleaner();
+	if (!isMatch) return dropCleaner();
 
-  const newPiece: Piece = {
-    type: type as Piece["type"],
-    color: color as Color,
-    position: newPosition,
-  };
+	const newPiece: Piece = {
+		type: type as Piece["type"],
+		color: color as Color,
+		position: newPosition,
+	};
 
-  gs.setLastMove({ from: originPosition, to: newPosition }, newPiece);
-  gs.setBoard(+originRow, +originCol, row, col, newPiece);
-  gs.toggleTurn();
-  dropCleaner();
+	gs.setLastMove({ from: originPosition, to: newPosition }, newPiece);
+	gs.setBoard(+originRow, +originCol, row, col, newPiece);
+	gs.toggleTurn();
+	dropCleaner();
 };
 
 const handleDragEnd = () => {
-  visible.value = true;
+	visible.value = true;
 };
 
 // Update highlights when valid moves change
 watchEffect(() => {
-  // Force DOM update by accessing computed values
-  isHighlighted.value;
-  highlightClass.value;
+	// Force DOM update by accessing computed values
+	isHighlighted.value;
+	highlightClass.value;
 });
 </script>
 <template>

@@ -1,11 +1,11 @@
-@import './base.css';
+@import "./base.css";
 
 .black {
-  background: #69655f;
+	background: #69655f;
 }
 
 .white {
-  background: #bcb49a;
+	background: #bcb49a;
 }
 
 * {
@@ -16,15 +16,15 @@
 }
 
 body {
-  max-height: 100dvh;
-  height: 100dvh;
-  overflow: hidden;
-  color: var(--text);
-  background: var(--background);
-  font-family: Inter, "Segoe UI", Roboto, sans-serif;
-  font-size: 1rem;
+	max-height: 100dvh;
+	height: 100dvh;
+	overflow: hidden;
+	color: var(--text);
+	background: var(--background);
+	font-family: Inter, "Segoe UI", Roboto, sans-serif;
+	font-size: 1rem;
 }
 
 #app {
-  @apply grid max-h-dvh h-dvh place-content-center;
+	@apply grid max-h-dvh h-dvh place-content-center;
 }
