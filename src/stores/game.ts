@@ -5,78 +5,78 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 export const useGameStore = defineStore("game", () => {
-	// 1. Board state management
-	const board = ref<BoardType>(fen2position(START_POSITION_FEN));
-	// const board = ref<BoardType>(fen2position("8/8/8/8/8/qq6/P7/8 w - - 0 1"));
+  // 1. Board state management
+  const board = ref<BoardType>(fen2position(START_POSITION_FEN));
+  // const board = ref<BoardType>(fen2position("8/8/8/8/8/qq6/P7/8 w - - 0 1"));
 
-	// Proper array mutation for Vue reactivity
-	const setBoard = (
-		prevRow: number,
-		prevCol: number,
-		newRow: number,
-		newCol: number,
-		newPiece: Piece, // Added null type for empty squares
-	) => {
-		// Create new array to ensure reactivity
-		const newBoard = board.value.map((row) => [...row]);
-		newBoard[newRow][newCol] = newPiece;
-		newBoard[prevRow][prevCol] = null;
-		board.value = newBoard;
-	};
+  // Proper array mutation for Vue reactivity
+  const setBoard = (
+    prevRow: number,
+    prevCol: number,
+    newRow: number,
+    newCol: number,
+    newPiece: Piece // Added null type for empty squares
+  ) => {
+    // Create new array to ensure reactivity
+    const newBoard = board.value.map(row => [...row]);
+    newBoard[newRow][newCol] = newPiece;
+    newBoard[prevRow][prevCol] = null;
+    board.value = newBoard;
+  };
 
-	// 2. Turn management with proper typing
-	const turn = ref<Color>("white"); // Explicit type for safety
-	const toggleTurn = () => {
-		turn.value = turn.value === "white" ? "black" : "white";
-	};
+  // 2. Turn management with proper typing
+  const turn = ref<Color>("white"); // Explicit type for safety
+  const toggleTurn = () => {
+    turn.value = turn.value === "white" ? "black" : "white";
+  };
 
-	const validMoves = ref<Position[]>([]);
-	const setValidMoves = (moves: Position[]) => {
-		validMoves.value = moves;
-	};
+  const validMoves = ref<Position[]>([]);
+  const setValidMoves = (moves: Position[]) => {
+    validMoves.value = moves;
+  };
 
-	const lastMove = ref<Move>(null);
-	const moveHistory = ref<string[][]>([]);
+  const lastMove = ref<Move>(null);
+  const moveHistory = ref<string[][]>([]);
 
-	const setLastMove = (move: Move, piece: Piece) => {
-		lastMove.value = move;
-		let pgn: string;
+  const setLastMove = (move: Move, piece: Piece) => {
+    lastMove.value = move;
+    let pgn: string;
 
-		const { row, col } = move!.to;
-		const oldPiece = board.value[row][col];
+    const { row, col } = move!.to;
+    const oldPiece = board.value[row][col];
 
-    const isCapture = (oldPiece && oldPiece.color != piece.color) || false;
-		if (piece.type == "pawn") {
-			pgn = pos2pgn(move!.to, piece, isCapture, move?.from.col);
-		} else {
-			pgn = pos2pgn(move!.to, piece, isCapture);
-		}
+    const isCapture = (oldPiece && oldPiece.color !== piece.color) || false;
+    if (piece.type === "pawn") {
+      pgn = pos2pgn(move!.to, piece, isCapture, move?.from.col);
+    } else {
+      pgn = pos2pgn(move!.to, piece, isCapture);
+    }
 
-		console.log("🚀 ~ setLastMove ~ isCapture:", isCapture);
+    console.log("🚀 ~ setLastMove ~ isCapture:", isCapture);
 
-		if (turn.value == "white") {
-			moveHistory.value.push([pgn]);
-		} else {
-			moveHistory.value[moveHistory.value.length - 1].push(pgn);
-		}
-	};
+    if (turn.value === "white") {
+      moveHistory.value.push([pgn]);
+    } else {
+      moveHistory.value[moveHistory.value.length - 1].push(pgn);
+    }
+  };
 
-	const selectedPiece = ref<Square>(null);
-	const setSelectedPiece = (piece: Square) => {
-		selectedPiece.value = piece;
-	};
+  const selectedPiece = ref<Square>(null);
+  const setSelectedPiece = (piece: Square) => {
+    selectedPiece.value = piece;
+  };
 
-	return {
-		board: computed(() => board.value), // Expose as computed
-		turn: computed(() => turn.value), // Expose as computed
-		validMoves: computed(() => validMoves.value), // Expose as computed
-		selectedPiece: computed(() => selectedPiece.value), // Expose as computed
-		lastMove: computed(() => lastMove.value), // Expose as computed
-		moveHistory: computed(() => moveHistory.value), // Expose as computed
-		setBoard,
-		toggleTurn,
-		setValidMoves,
-		setSelectedPiece,
-		setLastMove,
-	};
+  return {
+    board: computed(() => board.value), // Expose as computed
+    turn: computed(() => turn.value), // Expose as computed
+    validMoves: computed(() => validMoves.value), // Expose as computed
+    selectedPiece: computed(() => selectedPiece.value), // Expose as computed
+    lastMove: computed(() => lastMove.value), // Expose as computed
+    moveHistory: computed(() => moveHistory.value), // Expose as computed
+    setBoard,
+    toggleTurn,
+    setValidMoves,
+    setSelectedPiece,
+    setLastMove,
+  };
 });
